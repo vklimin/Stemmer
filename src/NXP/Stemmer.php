@@ -118,10 +118,13 @@ class Stemmer
     {
         $rv = 0;
         $state = 0;
-        $wordLength = mb_strlen($word, 'UTF-8');
-        for ($i = 1; $i < $wordLength; $i++) {
-            $prevChar = mb_substr($word, $i - 1, 1, 'UTF-8');
-            $char = mb_substr($word, $i, 1, 'UTF-8');
+        
+		$word = preg_split( '//ui', $word, NULL, PREG_SPLIT_NO_EMPTY );
+		$wordLength = count( $word );
+
+        for ($i = 0; $i < $wordLength; $i++) {
+			if ( $i > 0 ) $prevChar = $word[ $i - 1 ];
+			$char = $word[ $i ];
             switch ($state) {
                 case 0:
                     if (self::isVowel($char)) {
@@ -152,6 +155,6 @@ class Stemmer
      */
     private static function isVowel($char)
     {
-        return mb_stripos(self::VOWEL, $char, 0, 'UTF-8') !== false;
+        return preg_match('/' . $char . '/ui', self::VOWEL) === 1;
     }
 }
